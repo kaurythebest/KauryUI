@@ -210,23 +210,134 @@ export const DashboardComponents: React.FC<DashboardComponentsProps> = ({ onNavi
     : components.filter(c => c.category === activeCategory);
 
   const generateCdnCode = (component: ComponentCard) => {
-    const componentTag = `kaury-dashboard-${component.id.replace(/_/g, '-')}`;
-    
+    // Generate visual preview based on component type
+    const generateComponentHTML = () => {
+      const IconComponent = component.icon;
+      const iconSymbol = getIconSymbol(component.icon.name);
+      
+      if (component.category === 'overview') {
+        return `
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-icon ${component.gradient.replace('from-', 'bg-').replace(' to-', '-to-').replace('-500', '-500')}">${iconSymbol}</div>
+              <div class="metric-category">Overview</div>
+            </div>
+            <div class="metric-content">
+              <h3 class="metric-title">${component.title}</h3>
+              <div class="metric-value">${component.value || '0'}</div>
+              <div class="metric-change ${component.trend === 'up' ? 'positive' : component.trend === 'down' ? 'negative' : 'neutral'}">
+                <span class="trend-icon">${component.trend === 'up' ? '↗' : component.trend === 'down' ? '↘' : '●'}</span>
+                ${component.change || '+0%'}
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (component.category === 'analytics') {
+        return `
+          <div class="analytics-card">
+            <div class="analytics-header">
+              <div class="analytics-icon ${component.gradient.replace('from-', 'bg-').replace(' to-', '-to-').replace('-500', '-500')}">${iconSymbol}</div>
+              <h3 class="analytics-title">${component.title}</h3>
+            </div>
+            <div class="analytics-content">
+              <div class="chart-placeholder">
+                ${generateChartPreview(component.id)}
+              </div>
+              <p class="analytics-description">${component.description}</p>
+            </div>
+          </div>
+        `;
+      } else if (component.category === 'realtime') {
+        return `
+          <div class="realtime-card">
+            <div class="realtime-header">
+              <div class="realtime-icon ${component.gradient.replace('from-', 'bg-').replace(' to-', '-to-').replace('-500', '-500')}">${iconSymbol}</div>
+              <div class="live-indicator">
+                <div class="pulse-dot"></div>
+                <span>LIVE</span>
+              </div>
+            </div>
+            <div class="realtime-content">
+              <h3 class="realtime-title">${component.title}</h3>
+              <div class="realtime-value">${component.value || '0'}</div>
+              <div class="realtime-change">${component.change || 'Real-time data'}</div>
+            </div>
+          </div>
+        `;
+      }
+      return '<div>Component preview</div>';
+    };
+
+    const getIconSymbol = (iconName: string) => {
+      const iconMap: { [key: string]: string } = {
+        'Users': '👥',
+        'DollarSign': '$',
+        'Target': '🎯',
+        'Eye': '👁',
+        'LineChart': '📈',
+        'PieChart': '📊',
+        'Monitor': '💻',
+        'Globe': '🌍',
+        'Zap': '⚡',
+        'BarChart3': '📊',
+        'Activity': '📡',
+        'Clock': '🕐',
+        'ShoppingCart': '🛒',
+        'MessageCircle': '💬',
+        'Heart': '❤️'
+      };
+      return iconMap[iconName] || '📊';
+    };
+
+    const generateChartPreview = (componentId: string) => {
+      if (componentId.includes('traffic') || componentId.includes('line')) {
+        return `
+          <svg viewBox="0 0 300 150" class="chart-svg">
+            <polyline points="20,130 60,100 100,80 140,60 180,40 220,30 260,20" 
+                      fill="none" stroke="url(#gradient)" stroke-width="3"/>
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#3b82f6"/>
+                <stop offset="100%" style="stop-color:#8b5cf6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        `;
+      } else if (componentId.includes('pie') || componentId.includes('demographics')) {
+        return `
+          <svg viewBox="0 0 150 150" class="chart-svg">
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#3b82f6" stroke-width="20" 
+                    stroke-dasharray="113 377" transform="rotate(-90 75 75)"/>
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#8b5cf6" stroke-width="20" 
+                    stroke-dasharray="75 377" stroke-dashoffset="-113" transform="rotate(-90 75 75)"/>
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#06b6d4" stroke-width="20" 
+                    stroke-dasharray="50 377" stroke-dashoffset="-188" transform="rotate(-90 75 75)"/>
+          </svg>
+        `;
+      } else {
+        return `
+          <svg viewBox="0 0 300 150" class="chart-svg">
+            <rect x="20" y="100" width="30" height="30" fill="#3b82f6"/>
+            <rect x="70" y="80" width="30" height="50" fill="#8b5cf6"/>
+            <rect x="120" y="60" width="30" height="70" fill="#06b6d4"/>
+            <rect x="170" y="90" width="30" height="40" fill="#10b981"/>
+            <rect x="220" y="50" width="30" height="80" fill="#f59e0b"/>
+          </svg>
+        `;
+      }
+    };
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${component.title} - KauryUI Dashboard Component</title>
-    
-    <!-- KauryUI CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kauryui@latest/kauryui.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/kauryui@latest/kauryui.min.js"></script>
+    <title>${component.title} - Dashboard Component Preview</title>
     
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f172a;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: white;
             margin: 0;
             padding: 20px;
@@ -236,59 +347,225 @@ export const DashboardComponents: React.FC<DashboardComponentsProps> = ({ onNavi
             justify-content: center;
         }
         
-        .container {
-            max-width: 1200px;
+        /* Overview Components */
+        .metric-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 16px;
+            padding: 24px;
             width: 100%;
-            padding: 20px;
+            max-width: 320px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
         
-        .demo-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         
-        .demo-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
         
-        .demo-description {
-            font-size: 1.1rem;
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+        
+        .metric-category {
+            font-size: 12px;
             color: #94a3b8;
-            max-width: 600px;
-            margin: 0 auto;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            color: #f1f5f9;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .metric-change {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .metric-change.positive { color: #10b981; }
+        .metric-change.negative { color: #ef4444; }
+        .metric-change.neutral { color: #3b82f6; }
+        
+        .trend-icon {
+            margin-right: 4px;
+            font-size: 16px;
+        }
+        
+        /* Analytics Components */
+        .analytics-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .analytics-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .analytics-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+        
+        .analytics-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: #f1f5f9;
+        }
+        
+        .chart-placeholder {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+        }
+        
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+            max-width: 300px;
+            max-height: 150px;
+        }
+        
+        .analytics-description {
+            font-size: 14px;
+            color: #94a3b8;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        /* Real-time Components */
+        .realtime-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .realtime-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #8b5cf6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .realtime-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .realtime-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: linear-gradient(135deg, #ef4444, #f97316);
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #ef4444;
+            font-weight: 600;
+        }
+        
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 1s ease-in-out infinite;
+        }
+        
+        .realtime-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            color: #f1f5f9;
+        }
+        
+        .realtime-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .realtime-change {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="demo-header">
-            <h1 class="demo-title">${component.title}</h1>
-            <p class="demo-description">${component.description}</p>
-        </div>
-        
-        <!-- KauryUI Dashboard Component -->
-        <${componentTag}
-            ${component.value ? `value="${component.value}"` : ''}
-            ${component.change ? `change="${component.change}"` : ''}
-            ${component.trend ? `trend="${component.trend}"` : ''}
-            theme="dark"
-            animated="true"
-        ></${componentTag}>
-    </div>
-    
-    <script>
-        // Initialize KauryUI components
-        document.addEventListener('DOMContentLoaded', function() {
-            // Component will auto-initialize
-            console.log('KauryUI Dashboard Component loaded: ${component.title}');
-        });
-    </script>
+    ${generateComponentHTML()}
 </body>
 </html>`;
   };
