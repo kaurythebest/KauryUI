@@ -47,6 +47,7 @@ interface ComponentCard {
 export const DashboardComponents: React.FC<DashboardComponentsProps> = ({ onNavigate }) => {
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState<ComponentCard | null>(null);
+  const [selectedComponentForPreview, setSelectedComponentForPreview] = useState<ComponentCard | null>(null);
   const [activeCategory, setActiveCategory] = useState<'all' | 'overview' | 'analytics' | 'realtime'>('all');
 
   const components: ComponentCard[] = [
@@ -293,8 +294,14 @@ export const DashboardComponents: React.FC<DashboardComponentsProps> = ({ onNavi
   };
 
   const handleComponentClick = (component: ComponentCard) => {
-    setSelectedComponent(component);
-    setShowCodeModal(true);
+    setSelectedComponentForPreview(component);
+  };
+
+  const handleShowCode = () => {
+    if (selectedComponentForPreview) {
+      setSelectedComponent(selectedComponentForPreview);
+      setShowCodeModal(true);
+    }
   };
 
   const closeModal = () => {
@@ -349,7 +356,142 @@ export const DashboardComponents: React.FC<DashboardComponentsProps> = ({ onNavi
         </div>
 
         {/* Components Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Components List */}
+          <div>
+            <h2 className="text-xl font-semibold text-white mb-6">Available Components</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredComponents.map((component, index) => {
+                const IconComponent = component.icon;
+                const isSelected = selectedComponentForPreview?.id === component.id;
+                
+                return (
+                  <div
+                    key={component.id}
+                    onClick={() => handleComponentClick(component)}
+                    className={`group relative rounded-xl p-4 border transition-all duration-300 cursor-pointer hover:scale-105 animate-fade-in-up ${
+                      isSelected 
+                        ? 'bg-blue-600/20 border-blue-500 shadow-lg shadow-blue-500/25' 
+                        : 'bg-gray-800 border-gray-700 hover:border-gray-600'
+                    }`}
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    {/* Gradient Background */}
+                    <div className={`absolute inset-0 bg-gradient-to-r ${component.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-xl`}></div>
+                    
+                    {/* Content */}
+                    <div className="relative z-10">
+                      {/* Icon and Category */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className={`w-10 h-10 bg-gradient-to-r ${component.gradient} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                          <IconComponent className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="text-xs text-gray-400 bg-gray-700/50 px-2 py-1 rounded-full capitalize">
+                          {component.category}
+                        </div>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className={`text-sm font-semibold mb-2 transition-colors ${
+                        isSelected ? 'text-blue-400' : 'text-white group-hover:text-blue-400'
+                      }`}>
+                        {component.title}
+                      </h3>
+                      
+                      {/* Description */}
+                      <p className="text-gray-400 text-xs mb-3 leading-relaxed">
+                        {component.description}
+                      </p>
+
+                      {/* Metrics (if available) */}
+                      {component.value && (
+                        <div className="flex items-center justify-between">
+                          <div className="text-lg font-bold text-white">
+                            {component.value}
+                          </div>
+                          {component.change && (
+                            <div className={`flex items-center space-x-1 text-xs ${
+                              component.trend === 'up' ? 'text-green-400' : 
+                              component.trend === 'down' ? 'text-red-400' : 'text-blue-400'
+                            }`}>
+                              {component.trend === 'up' && <ArrowUp className="w-3 h-3" />}
+                              {component.trend === 'down' && <ArrowDown className="w-3 h-3" />}
+                              {!component.trend && <Activity className="w-3 h-3" />}
+                              <span>{component.change}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Selection indicator */}
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Live Preview */}
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-white">Live Preview</h2>
+              {selectedComponentForPreview && (
+                <button
+                  onClick={handleShowCode}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                >
+                  <Eye className="w-4 h-4" />
+                  <span>View Code</span>
+                </button>
+              )}
+            </div>
+            
+            <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
+              {selectedComponentForPreview ? (
+                <div className="relative">
+                  {/* Preview Header */}
+                  <div className="bg-gray-700/50 px-4 py-3 border-b border-gray-600 flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <selectedComponentForPreview.icon className="w-5 h-5 text-blue-400" />
+                      <span className="text-white font-medium">{selectedComponentForPreview.title}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Preview Content */}
+                  <div className="p-6 min-h-[400px] bg-gradient-to-br from-gray-900 to-gray-800">
+                    <iframe
+                      srcDoc={generateCdnCode(selectedComponentForPreview)}
+                      className="w-full h-96 border-0 rounded-lg"
+                      title={`Preview of ${selectedComponentForPreview.title}`}
+                      sandbox="allow-scripts"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+                  <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                    <MousePointer className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-white mb-2">Select a Component</h3>
+                  <p className="text-gray-400 text-sm max-w-sm">
+                    Click on any dashboard component from the list to see its live preview here.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Original grid for reference - now hidden */}
+        <div className="hidden">
           {filteredComponents.map((component, index) => {
             const IconComponent = component.icon;
             
