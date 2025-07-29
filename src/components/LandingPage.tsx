@@ -121,7 +121,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                 icon: <Type className="w-6 h-6" />,
                 title: "Text Animations",
                 description: "Animated text effects and transitions",
-                available: false,
+                available: true,
                 gradient: "from-red-500 to-pink-500"
               },
               {
@@ -173,6 +173,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                       onNavigate('icon-library');
                     } else if (tool.title === 'Dashboard Components') {
                       onNavigate('dashboard-components');
+                    } else if (tool.title === 'Text Animations') {
+                      onNavigate('text-animations');
                     }
                   }
                 }}

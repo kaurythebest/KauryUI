@@ -5,8 +5,9 @@ import { FaviconGenerator } from './components/FaviconGenerator';
 import { EmbedGenerator } from './components/EmbedGenerator';
 import { IconLibrary } from './components/IconLibrary';
 import { DashboardComponents } from './components/DashboardComponents';
+import { TextAnimationsPage } from './components/TextAnimationsPage';
 
-type View = 'landing' | 'form-builder' | 'favicon-generator' | 'embed-generator' | 'icon-library' | 'dashboard-components';
+type View = 'landing' | 'form-builder' | 'favicon-generator' | 'embed-generator' | 'icon-library' | 'dashboard-components' | 'text-animations';
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('landing');
@@ -34,6 +35,9 @@ function App() {
       )}
       {currentView === 'dashboard-components' && (
         <DashboardComponents onNavigate={handleNavigation} />
+      )}
+      {currentView === 'text-animations' && (
+        <TextAnimationsPage onNavigate={handleNavigation} />
       )}
     </div>
   );
