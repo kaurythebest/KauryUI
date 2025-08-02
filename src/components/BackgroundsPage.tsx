@@ -1,5 +1,22 @@
 import React, { useState } from 'react';
 import { Aurora } from '../lib/components/Backgrounds/Aurora/Aurora';
+import { Balatro } from '../lib/components/Backgrounds/Balatro/Balatro';
+import { Beams } from '../lib/components/Backgrounds/Beams/Beams';
+import { DarkVeil } from '../lib/components/Backgrounds/DarkVeil/DarkVeil';
+import { Dither } from '../lib/components/Backgrounds/Dither/Dither';
+import { DotGrid } from '../lib/components/Backgrounds/DotGrid/DotGrid';
+import { GridDistortion } from '../lib/components/Backgrounds/GridDistortion/GridDistortion';
+import { GridMotion } from '../lib/components/Backgrounds/GridMotion/GridMotion';
+import { Hyperspeed } from '../lib/components/Backgrounds/Hyperspeed/Hyperspeed';
+import { Iridescence } from '../lib/components/Backgrounds/Iridescence/Iridescence';
+import { Lightning } from '../lib/components/Backgrounds/Lightning/Lightning';
+import { LiquidChrome } from '../lib/components/Backgrounds/LiquidChrome/LiquidChrome';
+import { Orb } from '../lib/components/Backgrounds/Orb/Orb';
+import { Particles } from '../lib/components/Backgrounds/Particles/Particles';
+import { RippleGrid } from '../lib/components/Backgrounds/RippleGrid/RippleGrid';
+import { Squares } from '../lib/components/Backgrounds/Squares/Squares';
+import { Threads } from '../lib/components/Backgrounds/Threads/Threads';
+import { Waves } from '../lib/components/Backgrounds/Waves/Waves';
 import { 
   ArrowLeft, 
   Palette, 
@@ -66,43 +83,289 @@ export const BackgroundsPage: React.FC<BackgroundsPageProps> = ({ onNavigate }) 
       preview: 'gradient-aurora'
     },
     {
+      id: 'balatro',
+      title: 'Balatro',
+      description: 'Dynamic abstract background with fluid shapes and colors',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <Balatro />
+        </div>
+      ),
+      code: `import { Balatro } from './lib/components/Backgrounds/Balatro/Balatro';
+
+<Balatro />`,
+      category: 'animated',
+      difficulty: 'medium',
+      dependencies: [],
+      preview: 'balatro'
+    },
+    {
+      id: 'beams',
+      title: 'Beams',
+      description: 'Animated light beams with customizable colors and directions',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden bg-gray-900">
+          <Beams />
+        </div>
+      ),
+      code: `import { Beams } from './lib/components/Backgrounds/Beams/Beams';
+
+<Beams />`,
+      category: 'animated',
+      difficulty: 'medium',
+      dependencies: [],
+      preview: 'beams'
+    },
+    {
+      id: 'darkveil',
+      title: 'Dark Veil',
+      description: 'Mysterious dark veil effect with subtle animations',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <DarkVeil />
+        </div>
+      ),
+      code: `import { DarkVeil } from './lib/components/Backgrounds/DarkVeil/DarkVeil';
+
+<DarkVeil />`,
+      category: 'static',
+      difficulty: 'easy',
+      dependencies: [],
+      preview: 'darkveil'
+    },
+    {
+      id: 'dither',
+      title: 'Dither',
+      description: 'Retro dithering effect with pixelated patterns',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <Dither />
+        </div>
+      ),
+      code: `import { Dither } from './lib/components/Backgrounds/Dither/Dither';
+
+<Dither />`,
+      category: 'static',
+      difficulty: 'medium',
+      dependencies: [],
+      preview: 'dither'
+    },
+    {
+      id: 'dotgrid',
+      title: 'Dot Grid',
+      description: 'Interactive dot grid with mouse interaction effects',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <DotGrid />
+        </div>
+      ),
+      code: `import { DotGrid } from './lib/components/Backgrounds/DotGrid/DotGrid';
+
+<DotGrid />`,
+      category: 'interactive',
+      difficulty: 'medium',
+      dependencies: [],
+      preview: 'dotgrid'
+    },
+    {
+      id: 'griddistortion',
+      title: 'Grid Distortion',
+      description: 'Distorted grid pattern with wave-like animations',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <GridDistortion />
+        </div>
+      ),
+      code: `import { GridDistortion } from './lib/components/Backgrounds/GridDistortion/GridDistortion';
+
+<GridDistortion />`,
+      category: 'animated',
+      difficulty: 'hard',
+      dependencies: [],
+      preview: 'griddistortion'
+    },
+    {
+      id: 'gridmotion',
+      title: 'Grid Motion',
+      description: 'Dynamic grid with motion effects and perspective transforms',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <GridMotion />
+        </div>
+      ),
+      code: `import { GridMotion } from './lib/components/Backgrounds/GridMotion/GridMotion';
+
+<GridMotion />`,
+      category: 'animated',
+      difficulty: 'hard',
+      dependencies: [],
+      preview: 'gridmotion'
+    },
+    {
+      id: 'hyperspeed',
+      title: 'Hyperspeed',
+      description: 'Star field effect simulating hyperspeed travel',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden bg-black">
+          <Hyperspeed />
+        </div>
+      ),
+      code: `import { Hyperspeed } from './lib/components/Backgrounds/Hyperspeed/Hyperspeed';
+
+<Hyperspeed />`,
+      category: 'animated',
+      difficulty: 'hard',
+      dependencies: [],
+      preview: 'hyperspeed'
+    },
+    {
+      id: 'iridescence',
+      title: 'Iridescence',
+      description: 'Iridescent color-shifting background with rainbow effects',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <Iridescence />
+        </div>
+      ),
+      code: `import { Iridescence } from './lib/components/Backgrounds/Iridescence/Iridescence';
+
+<Iridescence />`,
+      category: 'animated',
+      difficulty: 'medium',
+      dependencies: [],
+      preview: 'iridescence'
+    },
+    {
+      id: 'lightning',
+      title: 'Lightning',
+      description: 'Electric lightning effects with branching patterns',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden bg-gray-900">
+          <Lightning />
+        </div>
+      ),
+      code: `import { Lightning } from './lib/components/Backgrounds/Lightning/Lightning';
+
+<Lightning />`,
+      category: 'animated',
+      difficulty: 'hard',
+      dependencies: [],
+      preview: 'lightning'
+    },
+    {
+      id: 'liquidchrome',
+      title: 'Liquid Chrome',
+      description: 'Metallic liquid chrome effect with reflective surfaces',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <LiquidChrome />
+        </div>
+      ),
+      code: `import { LiquidChrome } from './lib/components/Backgrounds/LiquidChrome/LiquidChrome';
+
+<LiquidChrome />`,
+      category: 'animated',
+      difficulty: 'hard',
+      dependencies: [],
+      preview: 'liquidchrome'
+    },
+    {
+      id: 'orb',
+      title: 'Orb',
+      description: 'Floating orb with glow effects and smooth movement',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden bg-gray-900">
+          <Orb />
+        </div>
+      ),
+      code: `import { Orb } from './lib/components/Backgrounds/Orb/Orb';
+
+<Orb />`,
+      category: 'animated',
+      difficulty: 'medium',
+      dependencies: [],
+      preview: 'orb'
+    },
+    {
       id: 'particles',
       title: 'Particles',
       description: 'Interactive particle system with mouse interaction',
       component: (
-        <div className="w-full h-48 bg-gray-900 rounded-lg flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20"></div>
-          <span className="text-white font-bold relative z-10">Particles Background (Coming Soon)</span>
+        <div className="w-full h-48 rounded-lg overflow-hidden bg-black">
+          <Particles />
         </div>
       ),
-      code: `// Particles background will be available soon
-<Particles 
-  count={100}
-  speed={2}
-  color="#ffffff"
-  interactive={true}
-/>`,
+      code: `import { Particles } from './lib/components/Backgrounds/Particles/Particles';
+
+<Particles />`,
       category: 'interactive',
       difficulty: 'hard',
       dependencies: ['three'],
       preview: 'particles'
     },
     {
+      id: 'ripplegrid',
+      title: 'Ripple Grid',
+      description: 'Grid with ripple effects spreading from interaction points',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <RippleGrid />
+        </div>
+      ),
+      code: `import { RippleGrid } from './lib/components/Backgrounds/RippleGrid/RippleGrid';
+
+<RippleGrid />`,
+      category: 'interactive',
+      difficulty: 'medium',
+      dependencies: [],
+      preview: 'ripplegrid'
+    },
+    {
+      id: 'squares',
+      title: 'Squares',
+      description: 'Animated squares pattern with geometric transformations',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <Squares />
+        </div>
+      ),
+      code: `import { Squares } from './lib/components/Backgrounds/Squares/Squares';
+
+<Squares />`,
+      category: 'animated',
+      difficulty: 'medium',
+      dependencies: [],
+      preview: 'squares'
+    },
+    {
+      id: 'threads',
+      title: 'Threads',
+      description: 'Interconnected threads with flowing animations',
+      component: (
+        <div className="w-full h-48 rounded-lg overflow-hidden bg-gray-900">
+          <Threads />
+        </div>
+      ),
+      code: `import { Threads } from './lib/components/Backgrounds/Threads/Threads';
+
+<Threads />`,
+      category: 'animated',
+      difficulty: 'hard',
+      dependencies: [],
+      preview: 'threads'
+    },
+    {
       id: 'waves',
       title: 'Waves',
       description: 'Smooth animated waves with customizable colors',
       component: (
-        <div className="w-full h-48 bg-gradient-to-b from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold">Waves Background (Coming Soon)</span>
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <Waves />
         </div>
       ),
-      code: `// Waves background will be available soon
-<Waves 
-  amplitude={50}
-  frequency={0.02}
-  speed={1}
-  color="#3b82f6"
-/>`,
+      code: `import { Waves } from './lib/components/Backgrounds/Waves/Waves';
+
+<Waves />`,
       category: 'animated',
       difficulty: 'easy',
       dependencies: ['gsap'],
@@ -371,8 +634,25 @@ export const BackgroundsPage: React.FC<BackgroundsPageProps> = ({ onNavigate }) 
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 <span className="text-green-400 font-medium text-sm">Integrated:</span>
               </div>
-              <div className="text-sm text-gray-300">
+              <div className="text-sm text-gray-300 flex flex-wrap gap-2">
                 <span className="bg-gray-800 px-2 py-1 rounded">Aurora</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Balatro</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Beams</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">DarkVeil</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Dither</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">DotGrid</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">GridDistortion</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">GridMotion</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Hyperspeed</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Iridescence</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Lightning</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">LiquidChrome</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Orb</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Particles</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">RippleGrid</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Squares</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Threads</span>
+                <span className="bg-gray-800 px-2 py-1 rounded">Waves</span>
               </div>
             </div>
           </div>

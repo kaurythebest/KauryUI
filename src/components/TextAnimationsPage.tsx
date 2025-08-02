@@ -18,7 +18,35 @@ import { GlitchText } from './ReactBitsIntegration/TextAnimations/GlitchText';
 import { ShinyText } from './ReactBitsIntegration/TextAnimations/ShinyText';
 import { DecryptedText } from './ReactBitsIntegration/TextAnimations/DecryptedText';
 import { SplitText } from './ReactBitsIntegration/TextAnimations/SplitText';
+import { CircularText } from '../lib/components/TextAnimations/CircularText/CircularText';
+import { CountUp } from '../lib/components/TextAnimations/CountUp/CountUp';
+import { CurvedLoop } from '../lib/components/TextAnimations/CurvedLoop/CurvedLoop';
+import { FallingText } from '../lib/components/TextAnimations/FallingText/FallingText';
+import { FuzzyText } from '../lib/components/TextAnimations/FuzzyText/FuzzyText';
+import { GradientText } from '../lib/components/TextAnimations/GradientText/GradientText';
+import { RotatingText } from '../lib/components/TextAnimations/RotatingText/RotatingText';
+import { ScrambledText } from '../lib/components/TextAnimations/ScrambledText/ScrambledText';
+import { ScrollFloat } from '../lib/components/TextAnimations/ScrollFloat/ScrollFloat';
+import { ScrollReveal } from '../lib/components/TextAnimations/ScrollReveal/ScrollReveal';
+import { ScrollVelocity } from '../lib/components/TextAnimations/ScrollVelocity/ScrollVelocity';
+import { TextCursor } from '../lib/components/TextAnimations/TextCursor/TextCursor';
+import { TextTrail } from '../lib/components/TextAnimations/TextTrail/TextTrail';
+import { TrueFocus } from '../lib/components/TextAnimations/TrueFocus/TrueFocus';
+import { VariableProximity } from '../lib/components/TextAnimations/VariableProximity/VariableProximity';
 import './ReactBitsIntegration/TextAnimations/GlitchText.css';
+import '../lib/components/TextAnimations/CircularText/CircularText.css';
+import '../lib/components/TextAnimations/CurvedLoop/CurvedLoop.css';
+import '../lib/components/TextAnimations/FallingText/FallingText.css';
+import '../lib/components/TextAnimations/GradientText/GradientText.css';
+import '../lib/components/TextAnimations/RotatingText/RotatingText.css';
+import '../lib/components/TextAnimations/ScrambledText/ScrambledText.css';
+import '../lib/components/TextAnimations/ScrollFloat/ScrollFloat.css';
+import '../lib/components/TextAnimations/ScrollReveal/ScrollReveal.css';
+import '../lib/components/TextAnimations/ScrollVelocity/ScrollVelocity.css';
+import '../lib/components/TextAnimations/TextCursor/TextCursor.css';
+import '../lib/components/TextAnimations/TextTrail/TextTrail.css';
+import '../lib/components/TextAnimations/TrueFocus/TrueFocus.css';
+import '../lib/components/TextAnimations/VariableProximity/VariableProximity.css';
 
 interface TextAnimationsPageProps {
   onNavigate: (view: string) => void;
@@ -164,6 +192,417 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
       category: 'entrance',
       difficulty: 'medium',
       dependencies: ['gsap']
+    },
+    {
+      id: 'circular-text',
+      title: 'Circular Text',
+      description: 'Text arranged in a circular pattern with rotation animation',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <CircularText
+            text="REACT*BITS*COMPONENTS*"
+            onHover="speedUp"
+            spinDuration={20}
+            className="text-white"
+          />
+        </div>
+      ),
+      code: `<CircularText
+  text="REACT*BITS*COMPONENTS*"
+  onHover="speedUp"
+  spinDuration={20}
+  className="text-white"
+/>`,
+      category: 'continuous',
+      difficulty: 'medium',
+      dependencies: ['framer-motion']
+    },
+    {
+      id: 'count-up',
+      title: 'Count Up',
+      description: 'Animated number counter with customizable formatting',
+      component: (
+        <CountUp
+          from={0}
+          to={1000}
+          separator=","
+          direction="up"
+          duration={2}
+          className="text-4xl font-bold text-blue-400"
+        />
+      ),
+      code: `<CountUp
+  from={0}
+  to={1000}
+  separator=","
+  direction="up"
+  duration={2}
+  className="text-4xl font-bold"
+/>`,
+      category: 'entrance',
+      difficulty: 'easy',
+      dependencies: ['framer-motion']
+    },
+    {
+      id: 'curved-loop',
+      title: 'Curved Loop',
+      description: 'Text following a curved path with smooth looping animation',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <CurvedLoop 
+            marqueeText="CURVED ✦ LOOP ✦ ANIMATION ✦"
+            speed={2}
+            curveAmount={400}
+            direction="right"
+            interactive={true}
+            className="text-purple-400"
+          />
+        </div>
+      ),
+      code: `<CurvedLoop 
+  marqueeText="CURVED ✦ LOOP ✦ ANIMATION ✦"
+  speed={2}
+  curveAmount={400}
+  direction="right"
+  interactive={true}
+/>`,
+      category: 'continuous',
+      difficulty: 'medium',
+      dependencies: []
+    },
+    {
+      id: 'falling-text',
+      title: 'Falling Text',
+      description: 'Physics-based text animation with Matter.js',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <FallingText
+            text="Physics based animation with falling letters!"
+            highlightWords={["Physics", "animation", "falling"]}
+            highlightClass="text-cyan-400"
+            trigger="hover"
+            backgroundColor="transparent"
+            wireframes={false}
+            gravity={0.8}
+            fontSize="1.5rem"
+            mouseConstraintStiffness={0.9}
+          />
+        </div>
+      ),
+      code: `<FallingText
+  text="Physics based animation!"
+  highlightWords={["Physics", "animation"]}
+  trigger="hover"
+  gravity={0.8}
+  fontSize="1.5rem"
+/>`,
+      category: 'interactive',
+      difficulty: 'hard',
+      dependencies: ['matter-js', '@types/matter-js']
+    },
+    {
+      id: 'fuzzy-text',
+      title: 'Fuzzy Text',
+      description: 'Text with a fuzzy, distorted effect that responds to interaction',
+      component: (
+        <FuzzyText 
+          baseIntensity={0.2} 
+          hoverIntensity={0.8} 
+          enableHover={true}
+        >
+          <span className="text-4xl font-bold text-red-400">FUZZY</span>
+        </FuzzyText>
+      ),
+      code: `<FuzzyText 
+  baseIntensity={0.2} 
+  hoverIntensity={0.8} 
+  enableHover={true}
+>
+  FUZZY TEXT
+</FuzzyText>`,
+      category: 'interactive',
+      difficulty: 'medium',
+      dependencies: []
+    },
+    {
+      id: 'gradient-text',
+      title: 'Gradient Text',
+      description: 'Animated gradient text with flowing colors',
+      component: (
+        <GradientText
+          colors={["#40ffaa", "#4079ff", "#40ffaa", "#4079ff", "#40ffaa"]}
+          animationSpeed={3}
+          showBorder={false}
+          className="text-4xl font-bold"
+        >
+          Gradient Animation
+        </GradientText>
+      ),
+      code: `<GradientText
+  colors={["#40ffaa", "#4079ff", "#40ffaa"]}
+  animationSpeed={3}
+  showBorder={false}
+>
+  Gradient Animation
+</GradientText>`,
+      category: 'continuous',
+      difficulty: 'easy',
+      dependencies: []
+    },
+    {
+      id: 'rotating-text',
+      title: 'Rotating Text',
+      description: 'Text that rotates through different words with smooth transitions',
+      component: (
+        <RotatingText
+          texts={['React', 'Bits', 'Is', 'Amazing!']}
+          mainClassName="px-4 bg-cyan-500 text-black overflow-hidden py-2 rounded-lg text-2xl font-bold"
+          staggerFrom="last"
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "-120%" }}
+          staggerDuration={0.025}
+          splitLevelClassName="overflow-hidden pb-1"
+          transition={{ type: "spring", damping: 30, stiffness: 400 }}
+          rotationInterval={2000}
+        />
+      ),
+      code: `<RotatingText
+  texts={['React', 'Bits', 'Is', 'Amazing!']}
+  mainClassName="px-4 bg-cyan-500 text-black py-2 rounded-lg"
+  rotationInterval={2000}
+/>`,
+      category: 'continuous',
+      difficulty: 'medium',
+      dependencies: ['framer-motion']
+    },
+    {
+      id: 'scrambled-text',
+      title: 'Scrambled Text',
+      description: 'Text that scrambles and unscrambles with GSAP animation',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <ScrambledText
+            className="text-2xl font-bold text-green-400"
+            radius={100}
+            duration={1.2}
+            speed={0.5}
+            scrambleChars=".:!@#$%^&*()"
+          >
+            Scrambled text animation with GSAP power!
+          </ScrambledText>
+        </div>
+      ),
+      code: `<ScrambledText
+  radius={100}
+  duration={1.2}
+  speed={0.5}
+  scrambleChars=".:!@#$%^&*()"
+>
+  Scrambled text animation!
+</ScrambledText>`,
+      category: 'interactive',
+      difficulty: 'medium',
+      dependencies: ['gsap']
+    },
+    {
+      id: 'scroll-float',
+      title: 'Scroll Float',
+      description: 'Text that floats and animates based on scroll position',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <ScrollFloat
+            animationDuration={1}
+            ease="back.inOut(2)"
+            scrollStart="center bottom+=50%"
+            scrollEnd="bottom bottom-=40%"
+            stagger={0.03}
+          >
+            <span className="text-4xl font-bold text-yellow-400">FLOAT</span>
+          </ScrollFloat>
+        </div>
+      ),
+      code: `<ScrollFloat
+  animationDuration={1}
+  ease="back.inOut(2)"
+  stagger={0.03}
+>
+  FLOATING TEXT
+</ScrollFloat>`,
+      category: 'entrance',
+      difficulty: 'medium',
+      dependencies: ['gsap']
+    },
+    {
+      id: 'scroll-reveal',
+      title: 'Scroll Reveal',
+      description: 'Text that reveals with blur and rotation effects on scroll',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <ScrollReveal
+            baseOpacity={0}
+            enableBlur={true}
+            baseRotation={5}
+            blurStrength={10}
+          >
+            <span className="text-2xl font-bold text-orange-400">
+              Scroll to reveal this amazing text animation!
+            </span>
+          </ScrollReveal>
+        </div>
+      ),
+      code: `<ScrollReveal
+  baseOpacity={0}
+  enableBlur={true}
+  baseRotation={5}
+  blurStrength={10}
+>
+  Scroll to reveal text!
+</ScrollReveal>`,
+      category: 'entrance',
+      difficulty: 'medium',
+      dependencies: ['gsap']
+    },
+    {
+      id: 'scroll-velocity',
+      title: 'Scroll Velocity',
+      description: 'Text that responds to scroll velocity with dynamic effects',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <ScrollVelocity
+            texts={['VELOCITY', 'SCROLL']} 
+            velocity={2} 
+            className="text-3xl font-bold text-pink-400"
+          />
+        </div>
+      ),
+      code: `<ScrollVelocity
+  texts={['VELOCITY', 'SCROLL']} 
+  velocity={2} 
+  className="text-3xl font-bold"
+/>`,
+      category: 'interactive',
+      difficulty: 'medium',
+      dependencies: ['framer-motion']
+    },
+    {
+      id: 'text-cursor',
+      title: 'Text Cursor',
+      description: 'Interactive text that follows mouse cursor with trail effects',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <TextCursor
+            text="FOLLOW"
+            delay={0.01}
+            spacing={80}
+            followMouseDirection={true}
+            randomFloat={true}
+            exitDuration={0.3}
+            removalInterval={20}
+            maxPoints={10}
+          />
+        </div>
+      ),
+      code: `<TextCursor
+  text="FOLLOW"
+  delay={0.01}
+  spacing={80}
+  followMouseDirection={true}
+  randomFloat={true}
+  maxPoints={10}
+/>`,
+      category: 'interactive',
+      difficulty: 'hard',
+      dependencies: ['framer-motion']
+    },
+    {
+      id: 'text-trail',
+      title: 'Text Trail',
+      description: '3D text with trailing effects using Three.js',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <TextTrail 
+            text="3D TRAIL"
+            fontFamily="Figtree"
+            fontWeight="900"
+            noiseFactor={1.2}
+            noiseScale={0.001}
+            rgbPersistFactor={0.95}
+            alphaPersistFactor={0.92}
+            animateColor={true}
+            startColor="#ff6b6b"
+            textColor="#4ecdc4"
+            backgroundColor="#1a1a2e"
+            colorCycleInterval={2000}
+            supersample={2}
+          />
+        </div>
+      ),
+      code: `<TextTrail 
+  text="3D TRAIL"
+  animateColor={true}
+  startColor="#ff6b6b"
+  textColor="#4ecdc4"
+  colorCycleInterval={2000}
+/>`,
+      category: 'continuous',
+      difficulty: 'hard',
+      dependencies: ['three']
+    },
+    {
+      id: 'true-focus',
+      title: 'True Focus',
+      description: 'Text with focus frame animation and blur effects',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <TrueFocus 
+            sentence="TRUE FOCUS"
+            manualMode={false}
+            blurAmount={5}
+            borderColor="#ff0080"
+            animationDuration={2}
+            pauseBetweenAnimations={1}
+          />
+        </div>
+      ),
+      code: `<TrueFocus 
+  sentence="TRUE FOCUS"
+  manualMode={false}
+  blurAmount={5}
+  borderColor="#ff0080"
+  animationDuration={2}
+/>`,
+      category: 'continuous',
+      difficulty: 'medium',
+      dependencies: ['framer-motion']
+    },
+    {
+      id: 'variable-proximity',
+      title: 'Variable Proximity',
+      description: 'Text with variable font weight based on mouse proximity',
+      component: (
+        <div className="w-full h-48 flex items-center justify-center">
+          <VariableProximity
+            label="Hover me! Variable font magic"
+            className="text-2xl text-white"
+            fromFontVariationSettings="'wght' 400, 'opsz' 9"
+            toFontVariationSettings="'wght' 1000, 'opsz' 40"
+            containerRef={null}
+            radius={100}
+            falloff="linear"
+          />
+        </div>
+      ),
+      code: `<VariableProximity
+  label="Hover me! Variable font magic"
+  fromFontVariationSettings="'wght' 400, 'opsz' 9"
+  toFontVariationSettings="'wght' 1000, 'opsz' 40"
+  radius={100}
+  falloff="linear"
+/>`,
+      category: 'interactive',
+      difficulty: 'medium',
+      dependencies: ['framer-motion']
     }
   ];
 
