@@ -9,7 +9,8 @@ import {
   Settings,
   Palette,
   Zap,
-  RefreshCw
+  RefreshCw,
+  Star
 } from 'lucide-react';
 
 interface AnimationViewerProps {
