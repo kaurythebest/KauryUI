@@ -17,6 +17,7 @@ import { BlurText } from './ReactBitsIntegration/TextAnimations/BlurText';
 import { GlitchText } from './ReactBitsIntegration/TextAnimations/GlitchText';
 import { ShinyText } from './ReactBitsIntegration/TextAnimations/ShinyText';
 import { DecryptedText } from './ReactBitsIntegration/TextAnimations/DecryptedText';
+import { SplitText } from './ReactBitsIntegration/TextAnimations/SplitText';
 import './ReactBitsIntegration/TextAnimations/GlitchText.css';
 
 interface TextAnimationsPageProps {
@@ -133,6 +134,36 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
       category: 'interactive',
       difficulty: 'medium',
       dependencies: ['framer-motion']
+    },
+    {
+      id: 'split-text',
+      title: 'Split Text',
+      description: 'GSAP-powered text animation that splits text into characters, words, or lines',
+      component: (
+        <SplitText
+          text="GSAP Split Animation!"
+          delay={50}
+          duration={0.8}
+          ease="back.out(1.7)"
+          splitType="chars"
+          from={{ opacity: 0, y: 50, rotation: 10 }}
+          to={{ opacity: 1, y: 0, rotation: 0 }}
+          className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-600"
+        />
+      ),
+      code: `<SplitText
+  text="GSAP Split Animation!"
+  delay={50}
+  duration={0.8}
+  ease="back.out(1.7)"
+  splitType="chars"
+  from={{ opacity: 0, y: 50, rotation: 10 }}
+  to={{ opacity: 1, y: 0, rotation: 0 }}
+  className="text-4xl font-bold"
+/>`,
+      category: 'entrance',
+      difficulty: 'medium',
+      dependencies: ['gsap']
     }
   ];
 

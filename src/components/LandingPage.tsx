@@ -3,6 +3,7 @@ import { Sparkles, Zap, Code, Palette, Layers, ArrowRight, Github, Star, Play, D
 import { BlurText } from './ReactBitsIntegration/TextAnimations/BlurText';
 import { GlitchText } from './ReactBitsIntegration/TextAnimations/GlitchText';
 import { ShinyText } from './ReactBitsIntegration/TextAnimations/ShinyText';
+import { SplitText } from './ReactBitsIntegration/TextAnimations/SplitText';
 import './ReactBitsIntegration/TextAnimations/GlitchText.css';
 
 interface LandingPageProps {
@@ -74,7 +75,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                 className="inline"
               />
               <br />
-              From form builders to text animations - everything you need in one place.
+              <SplitText
+                text="From form builders to text animations - everything you need in one place."
+                delay={80}
+                duration={0.6}
+                ease="power2.out"
+                splitType="words"
+                from={{ opacity: 0, y: 20 }}
+                to={{ opacity: 1, y: 0 }}
+                className="inline"
+              />
             </p>
           </div>
 
