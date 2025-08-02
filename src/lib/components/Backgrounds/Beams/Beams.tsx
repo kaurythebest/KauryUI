@@ -72,9 +72,9 @@ export const Beams: React.FC<BeamsProps> = ({ className = '' }) => {
 
         // Create gradient for beam
         const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
-        gradient.addColorStop(0, beam.color + '00');
+        gradient.addColorStop(0, beam.color.replace(')', ', 0)'));
         gradient.addColorStop(0.5, beam.color);
-        gradient.addColorStop(1, beam.color + '00');
+        gradient.addColorStop(1, beam.color.replace(')', ', 0)'));
 
         ctx.strokeStyle = gradient;
         ctx.lineWidth = beam.width;
