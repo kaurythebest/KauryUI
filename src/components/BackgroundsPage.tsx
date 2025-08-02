@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Aurora } from '../lib/components/Backgrounds/Aurora/Aurora';
 import { 
   ArrowLeft, 
   Palette, 
@@ -44,11 +45,16 @@ export const BackgroundsPage: React.FC<BackgroundsPageProps> = ({ onNavigate }) 
       title: 'Aurora',
       description: 'Beautiful aurora borealis effect with flowing colors',
       component: (
-        <div className="w-full h-48 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold">Aurora Background (Coming Soon)</span>
+        <div className="w-full h-48 rounded-lg overflow-hidden">
+          <Aurora 
+            colors={['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444']}
+            speed={1.2}
+            intensity={0.9}
+          />
         </div>
       ),
-      code: `// Aurora background will be available soon
+      code: `import { Aurora } from './lib/components/Backgrounds/Aurora/Aurora';
+
 <Aurora 
   colors={['#10b981', '#3b82f6', '#8b5cf6']}
   speed={1.5}
@@ -56,7 +62,7 @@ export const BackgroundsPage: React.FC<BackgroundsPageProps> = ({ onNavigate }) 
 />`,
       category: 'animated',
       difficulty: 'medium',
-      dependencies: ['three', 'framer-motion'],
+      dependencies: [],
       preview: 'gradient-aurora'
     },
     {
@@ -348,9 +354,9 @@ export const BackgroundsPage: React.FC<BackgroundsPageProps> = ({ onNavigate }) 
 
           <div className="mt-8 p-6 bg-gray-900/50 rounded-xl border border-gray-600">
             <h3 className="text-lg font-semibold text-white mb-3">Available Backgrounds from React Bits</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-300">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-300 mb-4">
               {[
-                'Aurora', 'Balatro', 'Beams', 'DarkVeil', 'Dither', 'DotGrid',
+                'Balatro', 'Beams', 'DarkVeil', 'Dither', 'DotGrid',
                 'GridDistortion', 'GridMotion', 'Hyperspeed', 'Iridescence',
                 'Lightning', 'LiquidChrome', 'Orb', 'Particles', 'RippleGrid',
                 'Squares', 'Threads', 'Waves'
@@ -359,6 +365,15 @@ export const BackgroundsPage: React.FC<BackgroundsPageProps> = ({ onNavigate }) 
                   {bg}
                 </div>
               ))}
+            </div>
+            <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-green-400 font-medium text-sm">Integrated:</span>
+              </div>
+              <div className="text-sm text-gray-300">
+                <span className="bg-gray-800 px-2 py-1 rounded">Aurora</span>
+              </div>
             </div>
           </div>
         </div>
