@@ -16,14 +16,28 @@ import {
   MousePointer,
   Monitor,
   Tablet,
-  Smartphone
+  Smartphone,
+  Waves,
+  Blur,
+  Hash,
+  Shuffle,
+  Clock,
+  Focus,
+  Variable,
+  Scroll,
+  Repeat,
+  Layers,
+  Move3D,
+  Crosshair,
+  Activity
 } from 'lucide-react';
+import { CodeModal } from './CodeModal';
 
 interface TextAnimationsPageProps {
   onNavigate: (view: string) => void;
 }
 
-type AnimationType = 'glitch' | 'shiny' | 'gradient' | 'scrambled' | 'rotating' | 'circular' | 'truefocus' | 'variable';
+type AnimationType = 'glitch' | 'shiny' | 'gradient' | 'scrambled' | 'rotating' | 'circular' | 'truefocus' | 'variable' | 'blur' | 'ascii' | 'countup' | 'curved' | 'decrypted' | 'falling' | 'fuzzy' | 'scrollfloat' | 'scrollreveal' | 'scrollvelocity' | 'splittext' | 'textcursor' | 'texttrail';
 
 interface AnimationConfig {
   type: AnimationType;
@@ -55,6 +69,49 @@ interface AnimationConfig {
   circularSpeed: number;
   // Variable proximity
   variableIntensity: number;
+  // Blur specific
+  blurAmount: number;
+  blurSpeed: number;
+  blurDirection: string;
+  // ASCII specific
+  asciiFontSize: number;
+  enableWaves: boolean;
+  // CountUp specific
+  countFrom: number;
+  countTo: number;
+  countDuration: number;
+  countSeparator: string;
+  // Curved specific
+  curveAmount: number;
+  curveSpeed: number;
+  curveDirection: string;
+  // Decrypted specific
+  decryptSpeed: number;
+  decryptChars: string;
+  decryptIterations: number;
+  // Falling specific
+  gravity: number;
+  highlightWords: string[];
+  // Fuzzy specific
+  fuzzyIntensity: number;
+  fuzzyHoverIntensity: number;
+  // Scroll animations
+  scrollAnimationDuration: number;
+  scrollStagger: number;
+  scrollEase: string;
+  // Split text
+  splitDelay: number;
+  splitDuration: number;
+  splitType: string;
+  // Text cursor
+  cursorSpacing: number;
+  cursorDelay: number;
+  cursorMaxPoints: number;
+  // Text trail
+  noiseFactor: number;
+  noiseScale: number;
+  animateColor: boolean;
+  colorCycleInterval: number;
 }
 
 export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNavigate }) => {
@@ -62,6 +119,8 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
   const [copied, setCopied] = useState(false);
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [isPlaying, setIsPlaying] = useState(true);
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [modalCodeContent, setModalCodeContent] = useState('');
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const [config, setConfig] = useState<AnimationConfig>({
@@ -93,7 +152,50 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
     circularRadius: 100,
     circularSpeed: 10,
     // Variable
-    variableIntensity: 100
+    variableIntensity: 100,
+    // Blur
+    blurAmount: 5,
+    blurSpeed: 1000,
+    blurDirection: 'top',
+    // ASCII
+    asciiFontSize: 8,
+    enableWaves: true,
+    // CountUp
+    countFrom: 0,
+    countTo: 100,
+    countDuration: 2,
+    countSeparator: ',',
+    // Curved
+    curveAmount: 500,
+    curveSpeed: 3,
+    curveDirection: 'right',
+    // Decrypted
+    decryptSpeed: 100,
+    decryptChars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*',
+    decryptIterations: 20,
+    // Falling
+    gravity: 0.56,
+    highlightWords: ['AMAZING', 'TEXT'],
+    // Fuzzy
+    fuzzyIntensity: 0.2,
+    fuzzyHoverIntensity: 1.0,
+    // Scroll animations
+    scrollAnimationDuration: 1,
+    scrollStagger: 0.03,
+    scrollEase: 'back.inOut(2)',
+    // Split text
+    splitDelay: 100,
+    splitDuration: 0.6,
+    splitType: 'chars',
+    // Text cursor
+    cursorSpacing: 80,
+    cursorDelay: 0.01,
+    cursorMaxPoints: 10,
+    // Text trail
+    noiseFactor: 1.2,
+    noiseScale: 0.001,
+    animateColor: true,
+    colorCycleInterval: 2000
   });
 
   const animations = [
@@ -130,7 +232,7 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
       name: 'Rotating Text',
       description: 'Cycle through different words with smooth transitions',
       category: 'Motion',
-      icon: RotateCcw
+      icon: Repeat
     },
     {
       id: 'circular',
@@ -144,14 +246,105 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
       name: 'True Focus',
       description: 'Focus effect with corner highlights',
       category: 'Interactive',
-      icon: MousePointer
+      icon: Focus
     },
     {
       id: 'variable',
       name: 'Variable Proximity',
       description: 'Font weight changes based on mouse proximity',
       category: 'Interactive',
-      icon: MousePointer
+      icon: Variable
+    },
+    {
+      id: 'blur',
+      name: 'Blur Text',
+      description: 'Animated blur reveal effect',
+      category: 'Effects',
+      icon: Blur
+    },
+    {
+      id: 'ascii',
+      name: 'ASCII Text',
+      description: '3D ASCII text with wave effects',
+      category: '3D',
+      icon: Hash
+    },
+    {
+      id: 'countup',
+      name: 'Count Up',
+      description: 'Animated number counting effect',
+      category: 'Numbers',
+      icon: Activity
+    },
+    {
+      id: 'curved',
+      name: 'Curved Loop',
+      description: 'Text following a curved path',
+      category: 'Motion',
+      icon: Waves
+    },
+    {
+      id: 'decrypted',
+      name: 'Decrypted Text',
+      description: 'Matrix-style decryption animation',
+      category: 'Effects',
+      icon: Shuffle
+    },
+    {
+      id: 'falling',
+      name: 'Falling Text',
+      description: 'Physics-based falling text animation',
+      category: '3D',
+      icon: Move3D
+    },
+    {
+      id: 'fuzzy',
+      name: 'Fuzzy Text',
+      description: 'Fuzzy blur effect on hover',
+      category: 'Effects',
+      icon: Blur
+    },
+    {
+      id: 'scrollfloat',
+      name: 'Scroll Float',
+      description: 'Text floating animation on scroll',
+      category: 'Scroll',
+      icon: Scroll
+    },
+    {
+      id: 'scrollreveal',
+      name: 'Scroll Reveal',
+      description: 'Text reveal animation on scroll',
+      category: 'Scroll',
+      icon: Eye
+    },
+    {
+      id: 'scrollvelocity',
+      name: 'Scroll Velocity',
+      description: 'Velocity-based scroll text animation',
+      category: 'Scroll',
+      icon: Zap
+    },
+    {
+      id: 'splittext',
+      name: 'Split Text',
+      description: 'Character-by-character animation',
+      category: 'Effects',
+      icon: Layers
+    },
+    {
+      id: 'textcursor',
+      name: 'Text Cursor',
+      description: 'Interactive cursor trail text',
+      category: 'Interactive',
+      icon: Crosshair
+    },
+    {
+      id: 'texttrail',
+      name: 'Text Trail',
+      description: '3D text with noise trail effects',
+      category: '3D',
+      icon: Move3D
     }
   ];
 
@@ -494,6 +687,337 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
           }
         `;
 
+      case 'blur':
+        return `
+          .blur-text {
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+            display: inline-block;
+          }
+
+          .blur-word {
+            display: inline-block;
+            filter: blur(${config.blurAmount}px);
+            opacity: 0;
+            animation: blurReveal ${config.blurSpeed}ms ease-out forwards;
+          }
+
+          @keyframes blurReveal {
+            to {
+              filter: blur(0px);
+              opacity: 1;
+            }
+          }
+        `;
+
+      case 'ascii':
+        return `
+          .ascii-text {
+            font-family: monospace;
+            font-size: ${config.asciiFontSize}px;
+            color: ${config.color};
+            white-space: pre;
+            line-height: 1;
+            text-align: center;
+            ${config.enableWaves ? 'animation: wave 2s ease-in-out infinite;' : ''}
+          }
+
+          @keyframes wave {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+          }
+        `;
+
+      case 'countup':
+        return `
+          .countup-text {
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+            font-variant-numeric: tabular-nums;
+          }
+        `;
+
+      case 'curved':
+        return `
+          .curved-loop-svg {
+            user-select: none;
+            width: 100%;
+            aspect-ratio: 100 / 12;
+            overflow: visible;
+            display: block;
+            font-size: ${config.fontSize}px;
+            fill: ${config.color};
+            font-weight: ${config.fontWeight};
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            line-height: 1;
+          }
+
+          .curved-text-path {
+            animation: curveMove ${config.curveSpeed}s linear infinite;
+          }
+
+          @keyframes curveMove {
+            0% { offset-distance: 0%; }
+            100% { offset-distance: 100%; }
+          }
+        `;
+
+      case 'decrypted':
+        return `
+          .decrypted-text {
+            font-family: monospace;
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            color: ${config.color};
+            cursor: pointer;
+          }
+
+          .decrypt-char {
+            display: inline-block;
+            transition: all 0.1s ease;
+          }
+
+          .decrypt-char.encrypted {
+            color: #00ff00;
+          }
+
+          .decrypt-char.revealed {
+            color: ${config.color};
+          }
+        `;
+
+      case 'falling':
+        return `
+          .falling-text-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            text-align: center;
+            padding-top: 2em;
+          }
+
+          .falling-text-target {
+            display: inline-block;
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+          }
+
+          .word {
+            display: inline-block;
+            margin: 0 2px;
+            user-select: none;
+          }
+
+          .highlighted {
+            color: cyan;
+            font-weight: bold;
+          }
+
+          .falling-text-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+          }
+        `;
+
+      case 'fuzzy':
+        return `
+          .fuzzy-text {
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+            filter: blur(${config.fuzzyIntensity}px);
+            transition: filter 0.3s ease;
+            cursor: pointer;
+          }
+
+          .fuzzy-text:hover {
+            filter: blur(${config.fuzzyHoverIntensity}px);
+          }
+        `;
+
+      case 'scrollfloat':
+        return `
+          .scroll-float {
+            overflow: hidden;
+          }
+
+          .scroll-float-text {
+            display: inline-block;
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+            text-align: center;
+            line-height: 1.5;
+          }
+
+          .char {
+            display: inline-block;
+            transform: translateY(100px);
+            opacity: 0;
+            animation: floatUp ${config.scrollAnimationDuration}s ${config.scrollEase} forwards;
+          }
+
+          @keyframes floatUp {
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+        `;
+
+      case 'scrollreveal':
+        return `
+          .scroll-reveal {
+            margin: 20px 0;
+          }
+
+          .scroll-reveal-text {
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+            line-height: 1.5;
+          }
+
+          .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px) rotate(5deg);
+            animation: revealWord ${config.scrollAnimationDuration}s ease forwards;
+          }
+
+          @keyframes revealWord {
+            to {
+              opacity: 1;
+              transform: translateY(0) rotate(0deg);
+            }
+          }
+        `;
+
+      case 'scrollvelocity':
+        return `
+          .parallax {
+            position: relative;
+            overflow: hidden;
+          }
+
+          .scroller {
+            display: flex;
+            white-space: nowrap;
+            text-align: center;
+            font-family: ${config.fontFamily};
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            color: ${config.color};
+            letter-spacing: -0.02em;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+            animation: scroll 10s linear infinite;
+          }
+
+          .scroller span {
+            flex-shrink: 0;
+            margin-right: 2em;
+          }
+
+          @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+        `;
+
+      case 'splittext':
+        return `
+          .split-text {
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+          }
+
+          .split-char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: splitReveal ${config.splitDuration}s ease forwards;
+          }
+
+          @keyframes splitReveal {
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `;
+
+      case 'textcursor':
+        return `
+          .text-cursor-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+          }
+
+          .text-cursor-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+          }
+
+          .text-cursor-item {
+            position: absolute;
+            user-select: none;
+            white-space: nowrap;
+            opacity: 0.8;
+            animation: cursorFade 2s ease-out forwards;
+          }
+
+          @keyframes cursorFade {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+          }
+        `;
+
+      case 'texttrail':
+        return `
+          .text-trail {
+            width: 100%;
+            height: 100%;
+            font-size: ${config.fontSize}px;
+            font-weight: ${config.fontWeight};
+            font-family: ${config.fontFamily};
+            color: ${config.color};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .trail-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+          }
+        `;
+
       default:
         return '';
     }
@@ -558,6 +1082,103 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
             `<span class="variable-char">${char}</span>`
           ).join('');
           return `<div class="variable-proximity">${variableChars}</div>`;
+
+        case 'blur':
+          const blurWords = config.text.split(' ').map((word, index) => 
+            `<span class="blur-word" style="animation-delay: ${index * 100}ms">${word}</span>`
+          ).join(' ');
+          return `<div class="blur-text">${blurWords}</div>`;
+
+        case 'ascii':
+          return `<div class="ascii-text">${config.text}</div>`;
+
+        case 'countup':
+          return `<div class="countup-text" data-from="${config.countFrom}" data-to="${config.countTo}" data-duration="${config.countDuration}">${config.countTo}</div>`;
+
+        case 'curved':
+          return `
+            <svg class="curved-loop-svg" viewBox="0 0 1000 120">
+              <defs>
+                <path id="curve" d="M 50 60 Q 500 ${config.curveAmount} 950 60" />
+              </defs>
+              <text class="curved-text-path">
+                <textPath href="#curve" startOffset="0%">
+                  ${config.text}
+                </textPath>
+              </text>
+            </svg>
+          `;
+
+        case 'decrypted':
+          const decryptChars = config.text.split('').map(char => 
+            `<span class="decrypt-char encrypted">${config.decryptChars[Math.floor(Math.random() * config.decryptChars.length)]}</span>`
+          ).join('');
+          return `<div class="decrypted-text" onclick="decryptText(this)">${decryptChars}</div>`;
+
+        case 'falling':
+          const fallingWords = config.text.split(' ').map((word, index) => {
+            const isHighlighted = config.highlightWords.includes(word);
+            return `<span class="word ${isHighlighted ? 'highlighted' : ''}">${word}</span>`;
+          }).join(' ');
+          return `
+            <div class="falling-text-container" onclick="triggerFalling()">
+              <div class="falling-text-target">${fallingWords}</div>
+              <canvas class="falling-text-canvas"></canvas>
+            </div>
+          `;
+
+        case 'fuzzy':
+          return `<div class="fuzzy-text">${config.text}</div>`;
+
+        case 'scrollfloat':
+          const floatChars = config.text.split('').map((char, index) => 
+            `<span class="char" style="animation-delay: ${index * config.scrollStagger}s">${char}</span>`
+          ).join('');
+          return `
+            <div class="scroll-float">
+              <div class="scroll-float-text">${floatChars}</div>
+            </div>
+          `;
+
+        case 'scrollreveal':
+          const revealWords = config.text.split(' ').map((word, index) => 
+            `<span class="word" style="animation-delay: ${index * config.scrollStagger}s">${word}</span>`
+          ).join(' ');
+          return `
+            <div class="scroll-reveal">
+              <div class="scroll-reveal-text">${revealWords}</div>
+            </div>
+          `;
+
+        case 'scrollvelocity':
+          return `
+            <div class="parallax">
+              <div class="scroller">
+                <span>${config.text}</span>
+                <span>${config.text}</span>
+              </div>
+            </div>
+          `;
+
+        case 'splittext':
+          const splitChars = config.text.split('').map((char, index) => 
+            `<span class="split-char" style="animation-delay: ${index * config.splitDelay}ms">${char}</span>`
+          ).join('');
+          return `<div class="split-text">${splitChars}</div>`;
+
+        case 'textcursor':
+          return `
+            <div class="text-cursor-container" onmousemove="handleCursorMove(event)">
+              <div class="text-cursor-inner" id="cursor-container"></div>
+            </div>
+          `;
+
+        case 'texttrail':
+          return `
+            <div class="text-trail">
+              <canvas class="trail-canvas" id="trail-canvas"></canvas>
+            </div>
+          `;
         
         default:
           return `<div>${config.text}</div>`;
@@ -603,13 +1224,148 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
               });
             });
           `;
+
+        case 'countup':
+          return `
+            function animateCountUp() {
+              const element = document.querySelector('.countup-text');
+              const from = ${config.countFrom};
+              const to = ${config.countTo};
+              const duration = ${config.countDuration * 1000};
+              const separator = '${config.countSeparator}';
+              
+              let start = null;
+              function step(timestamp) {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / duration, 1);
+                const current = Math.floor(from + (to - from) * progress);
+                element.textContent = current.toLocaleString().replace(/,/g, separator);
+                
+                if (progress < 1) {
+                  requestAnimationFrame(step);
+                }
+              }
+              requestAnimationFrame(step);
+            }
+            
+            animateCountUp();
+          `;
+
+        case 'decrypted':
+          return `
+            function decryptText(element) {
+              const chars = '${config.decryptChars}';
+              const originalText = '${config.text}';
+              const spans = element.querySelectorAll('.decrypt-char');
+              
+              spans.forEach((span, index) => {
+                let iterations = 0;
+                const interval = setInterval(() => {
+                  span.textContent = chars[Math.floor(Math.random() * chars.length)];
+                  iterations++;
+                  
+                  if (iterations > ${config.decryptIterations}) {
+                    clearInterval(interval);
+                    span.textContent = originalText[index];
+                    span.classList.remove('encrypted');
+                    span.classList.add('revealed');
+                  }
+                }, ${config.decryptSpeed});
+              });
+            }
+          `;
+
+        case 'falling':
+          return `
+            // Simplified falling text simulation
+            function triggerFalling() {
+              const words = document.querySelectorAll('.word');
+              words.forEach((word, index) => {
+                setTimeout(() => {
+                  word.style.transform = 'translateY(200px) rotate(' + (Math.random() * 360) + 'deg)';
+                  word.style.opacity = '0';
+                  word.style.transition = 'all 1s ease-in';
+                }, index * 100);
+              });
+              
+              setTimeout(() => {
+                words.forEach(word => {
+                  word.style.transform = 'translateY(0) rotate(0deg)';
+                  word.style.opacity = '1';
+                });
+              }, 3000);
+            }
+          `;
+
+        case 'textcursor':
+          return `
+            let cursorItems = [];
+            
+            function handleCursorMove(event) {
+              const container = document.getElementById('cursor-container');
+              const rect = container.getBoundingClientRect();
+              const x = event.clientX - rect.left;
+              const y = event.clientY - rect.top;
+              
+              const item = document.createElement('div');
+              item.className = 'text-cursor-item';
+              item.textContent = '${config.text}';
+              item.style.left = x + 'px';
+              item.style.top = y + 'px';
+              item.style.fontSize = '${config.fontSize}px';
+              item.style.color = '${config.color}';
+              
+              container.appendChild(item);
+              cursorItems.push(item);
+              
+              if (cursorItems.length > ${config.cursorMaxPoints}) {
+                const oldItem = cursorItems.shift();
+                oldItem.remove();
+              }
+              
+              setTimeout(() => {
+                item.remove();
+                cursorItems = cursorItems.filter(i => i !== item);
+              }, 2000);
+            }
+          `;
+
+        case 'texttrail':
+          return `
+            // Simplified text trail effect
+            const canvas = document.getElementById('trail-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+              canvas.width = canvas.offsetWidth;
+              canvas.height = canvas.offsetHeight;
+            }
+            
+            function drawText() {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.font = '${config.fontWeight} ${config.fontSize}px ${config.fontFamily}';
+              ctx.fillStyle = '${config.color}';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              
+              const x = canvas.width / 2 + Math.sin(Date.now() * 0.001) * 50;
+              const y = canvas.height / 2 + Math.cos(Date.now() * 0.001) * 30;
+              
+              ctx.fillText('${config.text}', x, y);
+              requestAnimationFrame(drawText);
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            drawText();
+          `;
         
         default:
           return '';
       }
     };
 
-    return `<!DOCTYPE html>
+    const fullHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -639,11 +1395,14 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
     </script>
 </body>
 </html>`;
+
+    setModalCodeContent(fullHTML);
+    return fullHTML;
   };
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(generateAnimationHTML());
+      await navigator.clipboard.writeText(modalCodeContent || generateAnimationHTML());
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -652,7 +1411,7 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
   };
 
   const downloadHTML = () => {
-    const html = generateAnimationHTML();
+    const html = modalCodeContent || generateAnimationHTML();
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -662,6 +1421,11 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  };
+
+  const showCodeModalHandler = () => {
+    generateAnimationHTML();
+    setShowCodeModal(true);
   };
 
   const updateConfig = (updates: Partial<AnimationConfig>) => {
@@ -678,14 +1442,12 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
   };
 
   const renderConfigPanel = () => {
-    const currentAnimation = animations.find(a => a.id === config.type);
-    
     return (
       <div className="space-y-6">
         {/* Animation Selection */}
         <div>
           <h3 className="text-sm font-medium text-white mb-3">Animation Type</h3>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
             {animations.map((animation) => (
               <button
                 key={animation.id}
@@ -715,6 +1477,24 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500"
                 rows={4}
                 placeholder="Enter words to rotate..."
+              />
+            </div>
+          ) : config.type === 'falling' ? (
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={config.text}
+                onChange={(e) => updateConfig({ text: e.target.value })}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter your text..."
+              />
+              <label className="text-xs text-gray-400">Highlight words (comma separated)</label>
+              <input
+                type="text"
+                value={config.highlightWords.join(', ')}
+                onChange={(e) => updateConfig({ highlightWords: e.target.value.split(',').map(w => w.trim()).filter(w => w) })}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500"
+                placeholder="word1, word2, word3..."
               />
             </div>
           ) : (
@@ -1080,6 +1860,283 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
             </div>
           </div>
         )}
+
+        {config.type === 'blur' && (
+          <div className="space-y-4 border-t border-gray-700 pt-4">
+            <h4 className="text-sm font-medium text-white">Blur Settings</h4>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Blur Amount: {config.blurAmount}px</label>
+              <input
+                type="range"
+                min="1"
+                max="20"
+                value={config.blurAmount}
+                onChange={(e) => updateConfig({ blurAmount: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Speed: {config.blurSpeed}ms</label>
+              <input
+                type="range"
+                min="100"
+                max="2000"
+                step="100"
+                value={config.blurSpeed}
+                onChange={(e) => updateConfig({ blurSpeed: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Direction</label>
+              <select
+                value={config.blurDirection}
+                onChange={(e) => updateConfig({ blurDirection: e.target.value })}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+                <option value="center">Center</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {config.type === 'ascii' && (
+          <div className="space-y-4 border-t border-gray-700 pt-4">
+            <h4 className="text-sm font-medium text-white">ASCII Settings</h4>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">ASCII Font Size: {config.asciiFontSize}px</label>
+              <input
+                type="range"
+                min="4"
+                max="16"
+                value={config.asciiFontSize}
+                onChange={(e) => updateConfig({ asciiFontSize: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={config.enableWaves}
+                onChange={(e) => updateConfig({ enableWaves: e.target.checked })}
+                className="mr-2 rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-purple-500"
+              />
+              <label className="text-sm font-medium text-gray-300">Enable wave animation</label>
+            </div>
+          </div>
+        )}
+
+        {config.type === 'countup' && (
+          <div className="space-y-4 border-t border-gray-700 pt-4">
+            <h4 className="text-sm font-medium text-white">Count Up Settings</h4>
+            
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">From</label>
+                <input
+                  type="number"
+                  value={config.countFrom}
+                  onChange={(e) => updateConfig({ countFrom: Number(e.target.value) })}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">To</label>
+                <input
+                  type="number"
+                  value={config.countTo}
+                  onChange={(e) => updateConfig({ countTo: Number(e.target.value) })}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Duration: {config.countDuration}s</label>
+              <input
+                type="range"
+                min="0.5"
+                max="10"
+                step="0.5"
+                value={config.countDuration}
+                onChange={(e) => updateConfig({ countDuration: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Separator</label>
+              <input
+                type="text"
+                value={config.countSeparator}
+                onChange={(e) => updateConfig({ countSeparator: e.target.value })}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500"
+                placeholder=","
+              />
+            </div>
+          </div>
+        )}
+
+        {config.type === 'fuzzy' && (
+          <div className="space-y-4 border-t border-gray-700 pt-4">
+            <h4 className="text-sm font-medium text-white">Fuzzy Settings</h4>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Base Intensity: {config.fuzzyIntensity}px</label>
+              <input
+                type="range"
+                min="0"
+                max="5"
+                step="0.1"
+                value={config.fuzzyIntensity}
+                onChange={(e) => updateConfig({ fuzzyIntensity: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Hover Intensity: {config.fuzzyHoverIntensity}px</label>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                step="0.1"
+                value={config.fuzzyHoverIntensity}
+                onChange={(e) => updateConfig({ fuzzyHoverIntensity: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+          </div>
+        )}
+
+        {(config.type === 'scrollfloat' || config.type === 'scrollreveal' || config.type === 'splittext') && (
+          <div className="space-y-4 border-t border-gray-700 pt-4">
+            <h4 className="text-sm font-medium text-white">Animation Settings</h4>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Duration: {config.scrollAnimationDuration}s</label>
+              <input
+                type="range"
+                min="0.1"
+                max="3"
+                step="0.1"
+                value={config.scrollAnimationDuration}
+                onChange={(e) => updateConfig({ scrollAnimationDuration: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Stagger: {config.scrollStagger}s</label>
+              <input
+                type="range"
+                min="0.01"
+                max="0.2"
+                step="0.01"
+                value={config.scrollStagger}
+                onChange={(e) => updateConfig({ scrollStagger: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+          </div>
+        )}
+
+        {config.type === 'textcursor' && (
+          <div className="space-y-4 border-t border-gray-700 pt-4">
+            <h4 className="text-sm font-medium text-white">Cursor Settings</h4>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Spacing: {config.cursorSpacing}px</label>
+              <input
+                type="range"
+                min="20"
+                max="200"
+                step="10"
+                value={config.cursorSpacing}
+                onChange={(e) => updateConfig({ cursorSpacing: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Max Points: {config.cursorMaxPoints}</label>
+              <input
+                type="range"
+                min="5"
+                max="50"
+                value={config.cursorMaxPoints}
+                onChange={(e) => updateConfig({ cursorMaxPoints: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+          </div>
+        )}
+
+        {config.type === 'texttrail' && (
+          <div className="space-y-4 border-t border-gray-700 pt-4">
+            <h4 className="text-sm font-medium text-white">Trail Settings</h4>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Noise Factor: {config.noiseFactor}</label>
+              <input
+                type="range"
+                min="0.1"
+                max="3"
+                step="0.1"
+                value={config.noiseFactor}
+                onChange={(e) => updateConfig({ noiseFactor: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Noise Scale: {config.noiseScale}</label>
+              <input
+                type="range"
+                min="0.0001"
+                max="0.01"
+                step="0.0001"
+                value={config.noiseScale}
+                onChange={(e) => updateConfig({ noiseScale: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={config.animateColor}
+                onChange={(e) => updateConfig({ animateColor: e.target.checked })}
+                className="mr-2 rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-purple-500"
+              />
+              <label className="text-sm font-medium text-gray-300">Animate colors</label>
+            </div>
+
+            {config.animateColor && (
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Color Cycle: {config.colorCycleInterval}ms</label>
+                <input
+                  type="range"
+                  min="500"
+                  max="5000"
+                  step="100"
+                  value={config.colorCycleInterval}
+                  onChange={(e) => updateConfig({ colorCycleInterval: Number(e.target.value) })}
+                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   };
@@ -1113,11 +2170,19 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
         {/* Actions */}
         <div className="p-4 border-t border-gray-700 space-y-3">
           <button
-            onClick={copyToClipboard}
+            onClick={showCodeModalHandler}
             className="w-full flex items-center justify-center space-x-2 bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium"
           >
+            <Eye className="w-4 h-4" />
+            <span>View CDN Code</span>
+          </button>
+          
+          <button
+            onClick={copyToClipboard}
+            className="w-full flex items-center justify-center space-x-2 bg-gray-700 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm"
+          >
             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-            <span>{copied ? 'Copied!' : 'Copy HTML Code'}</span>
+            <span>{copied ? 'Copied!' : 'Copy Code'}</span>
           </button>
           
           <button
@@ -1181,7 +2246,8 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
                   <div>
                     <h4 className="font-medium text-white mb-2">Features:</h4>
                     <ul className="space-y-1">
-                      <li>• Smooth CSS animations</li>
+                      <li>• Pure CSS/JS animations</li>
+                      <li>• CDN ready code</li>
                       <li>• Customizable colors</li>
                       <li>• Responsive design</li>
                       <li>• Cross-browser compatible</li>
@@ -1192,7 +2258,8 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
                   <div>
                     <h4 className="font-medium text-white mb-2">Usage:</h4>
                     <ul className="space-y-1">
-                      <li>• Copy the HTML code</li>
+                      <li>• Click "View CDN Code"</li>
+                      <li>• Copy the complete HTML</li>
                       <li>• Paste into your website</li>
                       <li>• Customize as needed</li>
                       <li>• Works on any platform</li>
@@ -1211,16 +2278,25 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
               <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-white">Complete HTML File</h3>
-                  <button
-                    onClick={copyToClipboard}
-                    className="flex items-center space-x-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm"
-                  >
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span>{copied ? 'Copied!' : 'Copy'}</span>
-                  </button>
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={showCodeModalHandler}
+                      className="flex items-center space-x-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm"
+                    >
+                      <Eye className="w-4 h-4" />
+                      <span>View in Modal</span>
+                    </button>
+                    <button
+                      onClick={copyToClipboard}
+                      className="flex items-center space-x-2 bg-gray-700 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm"
+                    >
+                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      <span>{copied ? 'Copied!' : 'Copy'}</span>
+                    </button>
+                  </div>
                 </div>
                 
-                <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+                <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto max-h-96">
                   <pre className="text-sm text-gray-300">
                     <code>{generateAnimationHTML()}</code>
                   </pre>
@@ -1229,18 +2305,22 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
 
               {/* Integration Instructions */}
               <div className="mt-8 bg-gray-800 rounded-2xl p-6 border border-gray-700">
-                <h3 className="text-lg font-semibold text-white mb-4">Integration Instructions</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">CDN Integration Instructions</h3>
                 <div className="space-y-4 text-sm text-gray-300">
                   <div>
-                    <h4 className="font-medium text-white mb-2">1. Copy the Code</h4>
-                    <p>Click the "Copy" button above to copy the complete HTML code to your clipboard.</p>
+                    <h4 className="font-medium text-white mb-2">1. Copy the Complete Code</h4>
+                    <p>Click "View CDN Code" to open the modal with the complete, ready-to-use HTML code.</p>
                   </div>
                   <div>
                     <h4 className="font-medium text-white mb-2">2. Save as HTML File</h4>
                     <p>Create a new HTML file and paste the code, or use the download button to get the file directly.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-white mb-2">3. Customize (Optional)</h4>
+                    <h4 className="font-medium text-white mb-2">3. No Dependencies Required</h4>
+                    <p>The generated code is completely self-contained with inline CSS and JavaScript.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-white mb-2">4. Customize (Optional)</h4>
                     <p>You can modify the CSS variables and text content to match your design requirements.</p>
                   </div>
                 </div>
@@ -1282,6 +2362,14 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
                     {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                     <span>{isPlaying ? 'Pause' : 'Play'}</span>
                   </button>
+
+                  <button
+                    onClick={showCodeModalHandler}
+                    className="flex items-center space-x-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>View Code</span>
+                  </button>
                 </div>
               </div>
               
@@ -1298,11 +2386,11 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
               </div>
 
               {/* Preview Info */}
-              <div className="mt-8 grid md:grid-cols-3 gap-6">
+              <div className="mt-8 grid md:grid-cols-4 gap-6">
                 <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
                   <Type className="w-8 h-8 text-purple-400 mb-3" />
-                  <h3 className="font-semibold text-white mb-2">Pure CSS</h3>
-                  <p className="text-sm text-gray-400">No JavaScript dependencies for most animations</p>
+                  <h3 className="font-semibold text-white mb-2">Pure CSS/JS</h3>
+                  <p className="text-sm text-gray-400">Self-contained animations with no external dependencies</p>
                 </div>
                 <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
                   <Zap className="w-8 h-8 text-purple-400 mb-3" />
@@ -1314,11 +2402,27 @@ export const TextAnimationsPage: React.FC<TextAnimationsPageProps> = ({ onNaviga
                   <h3 className="font-semibold text-white mb-2">Customizable</h3>
                   <p className="text-sm text-gray-400">Easy to modify colors, timing, and effects</p>
                 </div>
+                <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+                  <Copy className="w-8 h-8 text-purple-400 mb-3" />
+                  <h3 className="font-semibold text-white mb-2">CDN Ready</h3>
+                  <p className="text-sm text-gray-400">Complete HTML code ready for any website</p>
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Code Modal */}
+      {showCodeModal && (
+        <CodeModal
+          isOpen={showCodeModal}
+          onClose={() => setShowCodeModal(false)}
+          title={`${animations.find(a => a.id === config.type)?.name} - CDN Code`}
+          code={modalCodeContent}
+          componentName={animations.find(a => a.id === config.type)?.name || 'Text Animation'}
+        />
+      )}
     </div>
   );
 };
