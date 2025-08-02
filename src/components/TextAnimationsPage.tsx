@@ -1,36 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { 
-  ArrowLeft, 
-  Type, 
-  Copy,
-  Check,
-  Download,
-  Eye,
-  Settings,
-  Palette,
-  Zap,
-  Play,
-  Pause,
-  RotateCcw,
-  Sparkles,
-  MousePointer,
-  Monitor,
-  Tablet,
-  Smartphone,
-  Waves,
-  Blur,
-  Hash,
-  Shuffle,
-  Clock,
-  Focus,
-  Variable,
-  Scroll,
-  Repeat,
-  Layers,
-  Move3D,
-  Crosshair,
-  Activity
-} from 'lucide-react';
+import { ArrowLeft, Type, Copy, Check, Download, Eye, Settings, Palette, Zap, Play, Pause, RotateCcw, Sparkles, MousePointer, Monitor, Tablet, Smartphone, Waves, Bluetooth as Blur, Hash, Shuffle, Clock, Focus, Variable, Scroll, Repeat, Layers, Move3D, Crosshair, Activity } from 'lucide-react';
 import { CodeModal } from './CodeModal';
 
 interface TextAnimationsPageProps {
