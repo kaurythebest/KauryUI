@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Type } from 'lucide-react';
 import { AnimationViewer } from './AnimationViewer';
 import { BlurText } from './ReactBitsIntegration/TextAnimations/BlurText';
 import { GlitchText } from './ReactBitsIntegration/TextAnimations/GlitchText';
