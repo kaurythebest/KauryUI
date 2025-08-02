@@ -136,7 +136,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                 icon: <Image className="w-6 h-6" />,
                 title: "Backgrounds",
                 description: "Beautiful gradient and pattern backgrounds",
-                available: false,
+                available: true,
                 gradient: "from-purple-500 to-pink-500"
               },
               {
@@ -211,6 +211,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                       onNavigate('dashboard-components');
                     } else if (tool.title === 'Text Animations') {
                       onNavigate('text-animations');
+                    } else if (tool.title === 'Backgrounds') {
+                      onNavigate('backgrounds');
                     }
                   }
                 }}

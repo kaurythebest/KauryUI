@@ -6,8 +6,9 @@ import { EmbedGenerator } from './components/EmbedGenerator';
 import { IconLibrary } from './components/IconLibrary';
 import { DashboardComponents } from './components/DashboardComponents';
 import { TextAnimationsPage } from './components/TextAnimationsPage';
+import { BackgroundsPage } from './components/BackgroundsPage';
 
-type View = 'landing' | 'form-builder' | 'favicon-generator' | 'embed-generator' | 'icon-library' | 'dashboard-components' | 'text-animations';
+type View = 'landing' | 'form-builder' | 'favicon-generator' | 'embed-generator' | 'icon-library' | 'dashboard-components' | 'text-animations' | 'backgrounds';
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('landing');
@@ -38,6 +39,9 @@ function App() {
       )}
       {currentView === 'text-animations' && (
         <TextAnimationsPage onNavigate={handleNavigation} />
+      )}
+      {currentView === 'backgrounds' && (
+        <BackgroundsPage onNavigate={handleNavigation} />
       )}
     </div>
   );
